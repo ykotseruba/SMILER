@@ -19,6 +19,9 @@ from smiler_tools.parameters import ParameterMap
 # Constants
 ############################################################
 
+HERE_PATH = os.path.dirname(os.path.realpath(__file__))
+MATLAB_TOOLS_PATH = os.path.join(HERE_PATH, '..', '..', 'smiler_matlab_tools')
+
 MODEL_BASE_URL = "https://www.eecs.yorku.ca/rspace-jtfarm/SMILER/"
 
 NO_NVIDIA_DOCKER_WARNING_MSG = """WARNING: nvidia-docker not found!
@@ -119,7 +122,8 @@ class DockerModel(SMILERModel):
     def __init__(self, **kwargs):
         super(DockerModel, self).__init__(**kwargs)
 
-        self.docker_image = kwargs.get('docker_image')
+        self.docker_image = "{}:{}".format(
+            kwargs.get('docker_image'), self.version)
         self.run_command = kwargs.get('run_command')
         self.shell_command = kwargs.get('shell_command')
 
@@ -205,7 +209,9 @@ class MATLABModel(SMILERModel):
         options_matlab_startup = parameter_map.get_val('matlab_startup')
 
         matlab_engine = utils.maybe_init_matlab_engine(
-            startup_options=options_matlab_startup, init_iSMILER=True)
+            matlab_tools_path=MATLAB_TOOLS_PATH,
+            startup_options=options_matlab_startup,
+            init_iSMILER=True)
         if matlab_engine is None:
             print("Matlab initialization failed.")
             return
@@ -215,13 +221,13 @@ class MATLABModel(SMILERModel):
         if not os.path.exists(output_dir):
             os.mkdir(output_dir)
 
-        image_path_map = utils.get_image_path_map(
+        image_path_tuples = utils.get_image_path_tuples(
             input_dir, output_dir, recursive=options_recursive)
 
         algo_wrapper_function = getattr(matlab_engine, self.name + "_wrap")
 
-        num_paths = len(image_path_map)
-        for img_number, path_tuple in enumerate(image_path_map.items()):
+        num_paths = len(image_path_tuples)
+        for img_number, path_tuple in enumerate(image_path_tuples):
             input_path = path_tuple[0]
             output_path = path_tuple[1]
             printable_input_path = os.path.relpath(input_path, input_dir)
@@ -246,7 +252,9 @@ class MATLABModel(SMILERModel):
 
     def shell(self):
         matlab_engine = utils.maybe_init_matlab_engine(
-            startup_options="-desktop", init_iSMILER=True)
+            matlab_tools_path=MATLAB_TOOLS_PATH,
+            startup_options="-desktop",
+            init_iSMILER=True)
 
         if matlab_engine is None:
             print("Matlab initialization failed.")

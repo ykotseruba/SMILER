@@ -15,7 +15,7 @@ def create_dirs_if_none(path, uid=None, gid=None):
         os.chown(parent_path, uid, gid)
 
 
-def get_image_path_map(input_dir, output_dir, recursive=False):
+def get_image_path_tuples(input_dir, output_dir, recursive=False):
     if recursive:
         image_path_map = {}
         for dirpath, dirnames, filenames in os.walk(input_dir):
@@ -32,7 +32,7 @@ def get_image_path_map(input_dir, output_dir, recursive=False):
             if os.path.isfile(os.path.join(input_dir, f))
         }
 
-    return image_path_map
+    return sorted(image_path_map.items())
 
 
 def print_pretty_header(header_text, width=60):
@@ -43,19 +43,25 @@ def print_pretty_header(header_text, width=60):
 
 def pretty_print_parameters(parameter_list):
     parameters = sorted(parameter_list, key=lambda x: x.name)
-    for param in parameters:
-        print('')
-        print(param.name)
-        print('    Default:      {}'.format(param.value))
-        if (param.description):
-            print('    Description:  {}'.format('\n                  '.join(
-                textwrap.wrap(param.description, break_on_hyphens=False))))
-        if (param.valid_values):
-            print('    Valid Values: {}'.format('\n                   '.join(
-                textwrap.wrap(str(param.valid_values)))))
+    if parameters:
+        for param in parameters:
+            print('')
+            print(param.name)
+            print('    Default:      {}'.format(param.value))
+            if (param.description):
+                print('    Description:  {}'.format('\n                  '.join(
+                    textwrap.wrap(param.description, break_on_hyphens=False))))
+            if (param.valid_values):
+                print('    Valid Values: {}'.format('\n                   '.join(
+                    textwrap.wrap(str(param.valid_values)))))
+    else:
+        print('    None.')
 
 
-def maybe_init_matlab_engine(startup_options="-nodesktop", init_iSMILER=False):
+
+def maybe_init_matlab_engine(matlab_tools_path='smiler_matlab_tools',
+                             startup_options="-nodesktop",
+                             init_iSMILER=False):
     """
     Only creates a matlab engine and initializes iSMILER the first time it is run.
     """
@@ -73,7 +79,7 @@ def maybe_init_matlab_engine(startup_options="-nodesktop", init_iSMILER=False):
     if maybe_init_matlab_engine._matlab_engine is None:
         eng = matlab.engine.start_matlab(str(startup_options))
         if init_iSMILER:
-            eng.cd('smiler_matlab_tools')
+            eng.cd(matlab_tools_path)
             eng.iSMILER(nargout=0)
         maybe_init_matlab_engine._matlab_engine = eng
 

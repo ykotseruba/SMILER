@@ -38,16 +38,23 @@ pathroot = mfilename('fullpath');
 params = checkModelParams(params, [pathroot, '/smiler.json']);
 
 %% Reading the image
-img = checkImgInput(input_image, params.color_space);
+img = checkImgInput(input_image, params.color_space, true);
 
 %% Calculating the saliency map
 
-load('AW.mat', 'A', 'W');
+% resize the image
 [imgH, imgW, ~] = size(img);
+img = imresize(img, params.size);
+
+load('AW.mat', 'A', 'W');
+
 
 % Building Saliency Map
 myEnergy = im2Energy(img, W);
-salmap = vector2Im(myEnergy, imgH, imgW);
+salmap = vector2Im(myEnergy, params.size(1), params.size(2));
+
+%resize to original size
+salmap = imresize(salmap, [imgH, imgW]);
 
 % do any final post-processing as specified by the parameters
 salmap = fmtOutput(salmap, params);
