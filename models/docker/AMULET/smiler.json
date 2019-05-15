@@ -1,0 +1,17 @@
+{
+    "name": "AMULET",
+    "long_name": "Aggregating Multi-Level Convolutional Features for Salient Object Detection",
+    "version": "1.0.0",
+    "citation": "P. Zhang, D. Wang, H. Lu, H. Wang, X. Ruan, \"Amulet: Aggregating Multi-level Convolutional Features for Salient Object Detection\", ICCV, 2017.",
+    "model_type": "docker",
+    "model_files": [
+        "iiau_redfcn_saliency_iter_20000.caffemodel"
+    ],
+    "docker_image": "The docker image your model uses. Either built locally by you or available on docker hub.",
+    "run_command": [
+        "python",
+        "run_model.py"
+    ],
+    "shell_command": ["python"],
+    "parameters": {}
+}
