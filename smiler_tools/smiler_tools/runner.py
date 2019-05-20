@@ -6,6 +6,7 @@ import os
 import sys
 import json
 
+import numpy as np
 import scipy.misc
 import PIL
 
@@ -66,7 +67,7 @@ def run_model(compute_saliency,
                 PIL.Image.open(input_path), options)
             scipy.misc.toimage(pre_processed_image).save(shm_image_path)
 
-            saliency_map = compute_saliency(shm_image_path)
+            saliency_map = compute_saliency(shm_image_path)            
 
             post_processed_image = image_processing.post_process(
                 saliency_map, options)

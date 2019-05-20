@@ -139,6 +139,7 @@ class DockerModel(SMILERModel):
 
         if verbose:
             print("Running:\n{}".format(command))
+        print(' '.join(command))
         rc = subprocess.call(command)
         return rc
 

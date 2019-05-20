@@ -16,7 +16,7 @@ import sys
 import time
 import cv2
 
-caffe_root = 'caffe-sal/'
+caffe_root = '/opt/caffe-sal/'
 import sys
 sys.path.insert(0, caffe_root + 'python')
 
@@ -41,7 +41,7 @@ class AMULET():
 		caffe.set_device(0)
 		caffe.SGDSolver.display = 0
 		# load net
-		self.net = caffe.Net('models/Amulet/deploy.prototxt', 'models/Amulet/iiau_IntNet_saliency_iter_180000.caffemodel', caffe.TEST)
+		self.net = caffe.Net('deploy.prototxt', 'iiau_IntNet_saliency_iter_180000.caffemodel', caffe.TEST)
 		self.test_type = test_type
 
 	def compute_saliency(self, image_path):
@@ -67,7 +67,6 @@ class AMULET():
 			salmap = np.transpose(res['loss6'][:, 1, :, :], (1, 2, 0));
 			im = cv2.resize(salmap, (IMAGE_DIM, IMAGE_DIM), interpolation = cv2.INTER_LINEAR)
 
-		salmap  = cv2.resize(salmap, (img.shape[1], img.shape[0]), interpolation = cv2.INTER_LINEAR)
-
+		salmap = cv2.resize(salmap, (img.shape[1], img.shape[0]), interpolation = cv2.INTER_LINEAR)*255
 		return salmap
 
