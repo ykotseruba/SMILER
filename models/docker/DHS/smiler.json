@@ -1,0 +1,17 @@
+{
+    "name": "DHS",
+    "long_name": "Deep Hierarchical Saliency",
+    "version": "1.0.0",
+    "citation": "N. Liu, J. Han, \"DHSNet: Deep Hierarchical Saliency Network for Salient Object Detection\", CVPR, 2016",
+    "model_type": "docker",
+    "model_files": [
+        "SO_RCL_models_iter_10000.caffemodel"
+    ],
+    "docker_image": "dhs",
+    "run_command": [
+        "python",
+        "run_model.py"
+    ],
+    "shell_command": ["python"],
+    "parameters": {}
+}
