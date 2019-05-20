@@ -41,7 +41,7 @@ def run_model(compute_saliency,
     real_stderr = sys.stdout
     if not options_verbose:
         sys.stdout = open('/dev/null', 'w')
-        #sys.stderr = open('/dev/null', 'w')
+        sys.stderr = open('/dev/null', 'w')
 
     num_paths = len(image_path_tuples)
     for img_number, path_tuple in enumerate(image_path_tuples):

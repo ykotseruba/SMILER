@@ -65,7 +65,7 @@ class AMULET():
 			# salmap = max(0,mean_map);
 		else:
 			salmap = np.transpose(res['loss6'][:, 1, :, :], (1, 2, 0));
-			im = cv2.resize(salmap, (IMAGE_DIM, IMAGE_DIM), interpolation = cv2.INTER_LINEAR)
+			#im = cv2.resize(salmap, (IMAGE_DIM, IMAGE_DIM), interpolation = cv2.INTER_LINEAR)
 
 		salmap = cv2.resize(salmap, (img.shape[1], img.shape[0]), interpolation = cv2.INTER_LINEAR)*255 #multiply by 255 because smiler_tools/image_processing converts to uint8 which may result in precision loss
 		return salmap

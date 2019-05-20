@@ -1,0 +1,17 @@
+{
+    "name": "DSS",
+    "long_name": "Deeply Supervised Salient Object Detection",
+    "version": "1.0.0",
+    "citation": "Q. Hou, M.-M. Cheng, X. Hu, A. Borji, Z. Tu, P. Torr, \"Deeply Supervised Salient Object Detection with Short Connections\", CVPR, 2017",
+    "model_type": "docker",
+    "model_files": [
+        "dss_model_released.caffemodel"
+    ],
+    "docker_image": "dss",
+    "run_command": [
+        "python",
+        "run_model.py"
+    ],
+    "shell_command": ["python"],
+    "parameters": {}
+}

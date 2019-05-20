@@ -1,0 +1,68 @@
+FROM nvidia/cuda:8.0-cudnn5-devel
+
+ENV DSS_ROOT=/opt/model
+WORKDIR $DSS_ROOT
+
+## this is necessary for linking against cuda libraries ##
+ENV LD_LIBRARY_PATH=/usr/local/cuda/lib64/stubs/:/usr/local/lib/x86_64-linux-gnu:/usr/local/lib/i386-linux-gnu:/$DSS_ROOT/caffe_dss/:${LD_LIBRARY_PATH}
+ENV PATH /usr/local/nvidia/bin:${PATH}
+
+################################################################################
+### Apt and pip dependencies
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+build-essential \
+python-pip \
+python-dev \
+python-numpy \
+python-scipy \
+python-opencv \
+python-setuptools \
+libprotobuf-dev \
+libleveldb-dev \
+libsnappy-dev \
+libopencv-dev \
+libhdf5-serial-dev \
+protobuf-compiler \
+libboost-all-dev \
+libatlas-base-dev \
+libgflags-dev \
+libgoogle-glog-dev \
+liblmdb-dev \
+libxml2-dev \
+libxslt-dev \
+wget \
+unzip \
+git && rm -rf /var/lib/apt/lists/*
+
+RUN pip2 install --upgrade pip  && pip install cython>=0.17 matplotlib>=1.0 protobuf
+
+
+COPY ./smiler_tools /tmp/smiler_tools
+RUN pip install /tmp/smiler_tools
+
+################################################################################
+### Run command on container start.
+
+VOLUME ["/opt/model"]
+VOLUME ["/opt/input_vol"]
+VOLUME ["/opt/output_vol"]
+
+WORKDIR $DSS_ROOT
+
+CMD ["/bin/bash"]
+
+COPY models/docker/DSS/caffe_dss /opt/caffe_dss
+
+WORKDIR /opt/caffe_dss
+
+#RUN protoc src/caffe/proto/caffe.proto --cpp_out=. && mkdir include/caffe/proto && \
+#mv src/caffe/proto/caffe.pb.h include/caffe/proto
+
+RUN make -j8 && make tools && make pycaffe
+
+ENV PYTHONPATH=/opt/caffe_dss/python:$PYTHONPATH
+
+WORKDIR $DSS_ROOT
+
+CMD ["/bin/bash"]
