@@ -1,3 +1,0 @@
-#!/bin/bash
-
-docker build -t amulet:1.0.0 .
