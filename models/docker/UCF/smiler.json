@@ -1,0 +1,17 @@
+{
+    "name": "UCF",
+    "long_name": "Uncertain Convolutional Features",
+    "version": "1.0.0",
+    "citation": "P. Zhang, D. Wang, H. Lu, H. Wang, B. Yin, \"Learning Uncertain Convolutional Features for Accurate Saliency Detection\", ICCV, 2017.",
+    "model_type": "docker",
+    "model_files": [
+        "iiau_redfcn_saliency_iter_200000.caffemodel"
+    ],
+    "docker_image": "ucf",
+    "run_command": [
+        "python",
+        "run_model.py"
+    ],
+    "shell_command": ["python"],
+    "parameters": {}
+}
