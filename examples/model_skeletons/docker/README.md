@@ -59,15 +59,17 @@ In `smiler.json`, you will specify a Docker image this model will be run within.
 ### 3.1. Writing your own Dockerfile
 If you write your own Dockerfile you should build an image locally.
 
-```model_skeletons/docker/model/Dockerfile.example``` explains the steps that most saliency models would require with minor modifications.
+```model_skeletons/docker/model/Dockerfile.example``` explains the steps that most saliency models would require with minor modifications. Also see dockerfiles for other models in ```SMILER/dockerfiles```.
 
-First you need to select the image for the model (typically tensorflow, caffe or cuda).
+First select the image for the model (typically tensorflow, caffe or cuda).
 
-If you are building custom libraries (e.g. modified caffe or crf library for post-processing) you may need to add or remove dependencies from the ```Apt and pip dependencies``` step.
+When building custom libraries (e.g. modified caffe or crf library for post-processing) add or remove dependencies from the ```Apt and pip dependencies``` step.
 
-You may comment out the step ```Build custom caffe model``` or replace it with any other custom library you need to build.
+Comment out the step ```Build custom caffe model``` or replace it with any other custom library you need to build.
 
-Name your dockerfile as ```Dockerfile.YOUR_MODEL_NAME``` and place the file in ```SMILER/dockerfiles```.
+Do not modify the rest of the steps.
+
+Once finished, name your dockerfile as ```Dockerfile.YOUR_MODEL_NAME``` and place it in ```SMILER/dockerfiles```.
 
 To build the model run (from the SMILER root directory):
 
