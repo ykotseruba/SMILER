@@ -1,14 +1,14 @@
 {
-    "name": "The short name of the model.",
-    "long_name": "The full model name of the model.",
-    "version": "Model version within SMILER",
-    "citation": "Citation information.",
+    "name": "The short name of the model (e.g. AIM)",
+    "long_name": "The full model name of the model (e.g. Attention by Information Maximization)",
+    "version": "Model version within SMILER (e.g. 1.0.0)",
+    "citation": "Paper citation",
     "model_type": "docker",
     "model_files": [
         "If there are model prerequisite files (e.g. network weights), list them here.",
         "Put the files into docker/models/yourmodel/model/ directory."
     ],
-    "docker_image": "The docker image your model uses. Either built locally by you or available on docker hub.",
+    "docker_image": "The docker image your model uses. Either built locally by you or available on docker hub (e.g. aim)",
     "run_command": [
         "python",
         "run_model.py"

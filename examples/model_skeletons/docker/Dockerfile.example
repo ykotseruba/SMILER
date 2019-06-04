@@ -17,8 +17,8 @@ ENV MODEL_ROOT=/opt/model/
 WORKDIR $MODEL_ROOT
 
 
-## This is necessary for linking against cuda libraries ##
-## If you are doing a custom caffe build, replace <custom_caffe> with the path to your caffe folder.
+## If you are building caffe from source, this is necessary for linking against cuda libraries ##
+## Replace <custom_caffe> with the path to your caffe folder.
 
 ENV LD_LIBRARY_PATH=/usr/local/cuda/lib64/stubs/:/usr/local/lib/x86_64-linux-gnu:/usr/local/lib/i386-linux-gnu:/$MODEL_ROOT/<custom_caffe>/:${LD_LIBRARY_PATH}
 ENV PATH /usr/local/nvidia/bin:${PATH}
@@ -26,7 +26,8 @@ ENV PATH /usr/local/nvidia/bin:${PATH}
 ################################################################################
 ### Apt and pip dependencies
 
-### Most of these are typical for caffe models, so you won't need to modify them.
+### Standard list of dependencies for a custom caffe build.
+### For python3 support replace python-* dependencies with python3-* below.
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
 build-essential \
@@ -57,7 +58,8 @@ cmake \
 git && rm -rf /var/lib/apt/lists/*
 
 
-## Copy the smiler tools to run the model. DO NOT REMOVE THESE LINES!
+################################################################################
+### Copy SMILER tools
 
 COPY ./smiler_tools /tmp/smiler_tools
 RUN pip install /tmp/smiler_tools
@@ -73,15 +75,15 @@ WORKDIR $MODEL_ROOT
 
 CMD ["/bin/bash"]
 
-## If necessary build your custom caffe model
-
+###############################################################################
+## Build custom caffe model
 COPY models/docker/MODEL/custom-caffe /opt/custom-caffe
-
 WORKDIR /opt/custom-caffe
-
 RUN make -j8 && make tools && make pycaffe
-
 ENV PYTHONPATH=/opt/custom-caffe/python:$PYTHONPATH
+
+
+###############################################################################
 
 WORKDIR $MODEL_ROOT
 

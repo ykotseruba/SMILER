@@ -4,6 +4,7 @@ set -e
 
 if [ "$#" -ne 2 ]; then
     echo "USAGE: dockerfiles/$0 [model_name] [tag number]"
+    echo "e.g. dockerfiles/$0 DGII 1.1.2"
     exit 1
 fi
 
