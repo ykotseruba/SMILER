@@ -1,0 +1,88 @@
+#Use an appropriate image for your model.
+#If your model requires tensorflow you may consider using a tensorflow-gpu image with appropriate version
+# e.g. tensorflow/tensorflow:1.12.0-gpu-py3
+#If your model uses vanilla caffe, then you may use a caffe image
+#(e.g. bvlc/caffe:gpu)
+
+#If it uses a modified caffe library, then your choices would be either CUDA or CUDA with CUDNN support
+#(check what the caffe version requires) and you will have to build your own caffe library
+#	e.g. nvidia/cuda:7-devel nvidia/cuda:8.0-cudnn-devel
+
+FROM nvidia/cuda:7.5-devel
+
+#Define environment variable for the location of your model
+ENV MODEL_ROOT=/opt/model/
+
+#Change the working directory
+WORKDIR $MODEL_ROOT
+
+
+## This is necessary for linking against cuda libraries ##
+## If you are doing a custom caffe build, replace <custom_caffe> with the path to your caffe folder.
+
+ENV LD_LIBRARY_PATH=/usr/local/cuda/lib64/stubs/:/usr/local/lib/x86_64-linux-gnu:/usr/local/lib/i386-linux-gnu:/$MODEL_ROOT/<custom_caffe>/:${LD_LIBRARY_PATH}
+ENV PATH /usr/local/nvidia/bin:${PATH}
+
+################################################################################
+### Apt and pip dependencies
+
+### Most of these are typical for caffe models, so you won't need to modify them.
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+build-essential \
+python-pip \
+python-dev \
+python-numpy \
+python-scipy \
+python-opencv \
+python-skimage \
+python-protobuf \
+python-setuptools \
+libprotobuf-dev \
+libleveldb-dev \
+libsnappy-dev \
+libopencv-dev \
+libhdf5-serial-dev \
+protobuf-compiler \
+libboost-all-dev \
+libatlas-base-dev \
+libgflags-dev \
+libgoogle-glog-dev \
+liblmdb-dev \
+libxml2-dev \
+libxslt-dev \
+wget \
+unzip \
+cmake \
+git && rm -rf /var/lib/apt/lists/*
+
+
+## Copy the smiler tools to run the model. DO NOT REMOVE THESE LINES!
+
+COPY ./smiler_tools /tmp/smiler_tools
+RUN pip install /tmp/smiler_tools
+
+################################################################################
+### Run command on container start.
+
+VOLUME ["/opt/model"]
+VOLUME ["/opt/input_vol"]
+VOLUME ["/opt/output_vol"]
+
+WORKDIR $MODEL_ROOT
+
+CMD ["/bin/bash"]
+
+## If necessary build your custom caffe model
+
+COPY models/docker/MODEL/custom-caffe /opt/custom-caffe
+
+WORKDIR /opt/custom-caffe
+
+RUN make -j8 && make tools && make pycaffe
+
+ENV PYTHONPATH=/opt/custom-caffe/python:$PYTHONPATH
+
+WORKDIR $MODEL_ROOT
+
+CMD ["/bin/bash"]
