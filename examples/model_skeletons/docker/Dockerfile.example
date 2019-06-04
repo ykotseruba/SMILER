@@ -80,6 +80,8 @@ CMD ["/bin/bash"]
 COPY models/docker/MODEL/custom-caffe /opt/custom-caffe
 WORKDIR /opt/custom-caffe
 RUN make -j8 && make tools && make pycaffe
+
+## This shows how to add a directory to pythonpath
 ENV PYTHONPATH=/opt/custom-caffe/python:$PYTHONPATH
 
 
