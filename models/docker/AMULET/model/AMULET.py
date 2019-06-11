@@ -54,15 +54,14 @@ class AMULET():
 		res = self.net.forward()
 
 		if 'contrast' in self.test_type:
-			pass
-			#TODO: finish this
-			# for j in range(0, len(res)):
-			#   be_map = np.transpose(res['loss6'][:, j, :, :], (1 0 2));
-			#   fe_map = np.transpose(res['loss6'][:,:,1], (1 0 2));
-			#   diff_map[:,:,j] = fe_map - be_map;
-			#
-			# mean_map = mean(diff_map,3);
-			# salmap = max(0,mean_map);
+			diff_maps = []
+			for j in range(0, len(res)):
+			  be_map = np.transpose(res['loss6'][:, j, :, :], (1, 0, 2));
+			  fe_map = np.transpose(res['loss6'][:,:,1], (1, 0, 2));
+			  diff_maps.append(fe_map - be_map);
+			
+			mean_map = mean(np.dstack(diff_maps),3);
+			salmap = max(0,mean_map);
 		else:
 			salmap = np.transpose(res['loss6'][:, 1, :, :], (1, 2, 0));
 			#im = cv2.resize(salmap, (IMAGE_DIM, IMAGE_DIM), interpolation = cv2.INTER_LINEAR)
